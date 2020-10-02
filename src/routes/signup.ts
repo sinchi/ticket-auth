@@ -4,7 +4,7 @@ import bodyValidator from '../middleware/validator'
 import { RequestValidationError } from '../errors/RequestConnectionError';
 import { DatabaseConnectionError } from '../errors/DatabaseValidationError';
 
-import { User } from '../models/user';
+import { User, UserDoc } from '../models/user';
 import { BadRequestError } from '../errors/BadRequestError';
 
 
@@ -22,12 +22,16 @@ router.post('/api/users/signup', bodyValidator , async (req: Request, res: Respo
   if(existingUser) {
     throw new BadRequestError('Email already in use');
   }
-      
-  const user = User.buildUser({ email, password });
-  await user.save();   
-  
+    
+  let user: UserDoc;
+  try {
+     user = User.buildUser({ email, password });
+    await user.save();   
+    
+  } catch (error) {
+    throw new DatabaseConnectionError('Database error');
+  }
   res.status(201).send(user);
-  
 });
 
 export { router as signupRouter };

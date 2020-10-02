@@ -1,6 +1,6 @@
-export // An interface of properties that
+// An interface of properties that
 // required the Collection to create new User
-interface UserAttrs {
+export interface UserAttrs {
   email: string,
   password: string
 }

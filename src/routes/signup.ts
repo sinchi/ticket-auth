@@ -14,7 +14,7 @@ router.post('/api/users/signup', bodyValidator , (req: Request, res: Response) =
   const { email, password } = req.body;
 
   console.log('Creating a user');
-  throw new DatabaseConnectionError('Database connection error');
+  throw new DatabaseConnectionError();
   res.send({})
 });
 

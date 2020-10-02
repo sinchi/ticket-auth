@@ -1,16 +1,18 @@
-export class DatabaseConnectionError extends Error {
+import { SerializeError } from "./SerializeError";
 
-  private reason: string;
+export class DatabaseConnectionError extends SerializeError {
+  
 
-  constructor(reason: string = 'Error connecting to database') {
+  statusCode = 500;
+
+  constructor(public reason: string = 'Error connecting to database') {
     super();
-    this.reason = reason;
-
     Object.setPrototypeOf(this, DatabaseConnectionError.prototype);
   }
 
 
-  getReason() {
-    return this.reason;
+  serializeErrors(): { message: string; field?: string | undefined; }[] {
+    return [{ message: this.reason }]
   }
+
 }

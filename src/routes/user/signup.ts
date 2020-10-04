@@ -22,7 +22,7 @@ router.post('/api/users/signup', bodyValidator , async (req: Request, res: Respo
 
   const existingUser = await User.findOne({ email });  
   if(existingUser) {
-    throw new BadRequestError('Email already in use');
+    throw new BadRequestError('Email already in use.');
   }
     
   let user: UserDoc;

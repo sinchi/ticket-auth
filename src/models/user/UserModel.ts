@@ -6,5 +6,5 @@ import { UserAttrs } from './UserAttrs';
 // of User Model has  
 export interface UserModel extends Model<UserDoc> {
 
-  buildUser(attrs: UserAttrs): UserDoc;
+  build(attrs: UserAttrs): UserDoc;
 }

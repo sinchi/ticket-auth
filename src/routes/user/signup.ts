@@ -1,18 +1,19 @@
 import express, { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
-import bodyValidator from '../middleware/validator'
-import { RequestValidationError } from '../errors/RequestConnectionError';
-import { DatabaseConnectionError } from '../errors/DatabaseValidationError';
-
-import { User, UserDoc } from '../models/user';
-import { BadRequestError } from '../errors/BadRequestError';
-
 import jwt from 'jsonwebtoken';
+import { validationResult } from 'express-validator';
+import bodyValidator from '../../middleware/validator'
+import { RequestValidationError } from '../../errors/RequestConnectionError';
+import { DatabaseConnectionError } from '../../errors/DatabaseValidationError';
+
+import { User, UserDoc } from '../../models/user';
+import { BadRequestError } from '../../errors/BadRequestError';
+
 
 const router = express.Router();
 
 router.post('/api/users/signup', bodyValidator , async (req: Request, res: Response) => {
   const errors = validationResult(req);  
+
   if(!errors.isEmpty()) {        
     throw new RequestValidationError(errors.array());
   }
@@ -26,8 +27,8 @@ router.post('/api/users/signup', bodyValidator , async (req: Request, res: Respo
     
   let user: UserDoc;
   try {
-     user = User.buildUser({ email, password });
-    await user.save();   
+     user = User.build({ email, password });
+     await user.save();   
     
     // generate json web token
     const userJWT = jwt.sign({

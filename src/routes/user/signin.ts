@@ -1,21 +1,27 @@
 import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { validationResult } from 'express-validator';
-import bodyValidator from '../../middleware/validator'
-import { RequestValidationError } from '../../errors/RequestConnectionError';
-import { DatabaseConnectionError } from '../../errors/DatabaseValidationError';
+
+
+
+import { body } from 'express-validator'
 
 import { User, UserDoc } from '../../models/user';
 import { BadRequestError } from '../../errors/BadRequestError';
 import { Password } from '../../services/Password';
+import { requestValidation } from '../../middleware/request-handler';
 
 const router = express.Router();
 
-router.post('/api/users/signin', bodyValidator, async (req: Request, res: Response) => {
-  const errors = validationResult(req);  
-  if(!errors.isEmpty()) {        
-    throw new RequestValidationError(errors.array());
-  }
+router.post('/api/users/signin', [
+  body('email')
+  .isEmail()
+  .withMessage('Email must be valid'),
+  body('password')
+  .trim()
+  .isLength({ min: 4, max: 20 })
+  .withMessage('Password must be between 4 and 20 characters')
+], requestValidation, async (req: Request, res: Response) => {
+  
   
   const { email, password } = req.body;
 
@@ -24,7 +30,9 @@ router.post('/api/users/signin', bodyValidator, async (req: Request, res: Respon
     throw new BadRequestError('This user is not exist');
   }
 
-  if(!Password.compare(existingUser.password, password)) {
+  const isRightPassword = await Password.compare(existingUser.password, password)
+
+  if(!isRightPassword) {
     throw new BadRequestError('Password incorrect');
   }
 

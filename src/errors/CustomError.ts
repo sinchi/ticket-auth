@@ -1,11 +1,11 @@
-export abstract class SerializeError extends Error {
+export abstract class CustomError extends Error {
 
   abstract statusCode: number;
 
   constructor() {
     super();
     
-    Object.setPrototypeOf(this, SerializeError.prototype)
+    Object.setPrototypeOf(this, CustomError.prototype)
   }
 
 

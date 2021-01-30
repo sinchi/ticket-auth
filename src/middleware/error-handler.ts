@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { SerializeError } from "../errors/SerializeError";
+import { CustomError } from "../errors/CustomError";
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
 
-  if(err instanceof SerializeError) {    
+  if(err instanceof CustomError) {    
     return res.status(err.statusCode).send({ errors: err.serializeErrors() })
   }
 

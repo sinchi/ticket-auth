@@ -21,8 +21,7 @@ router.post('/api/users/signin', [
   .isLength({ min: 4, max: 20 })
   .withMessage('Password must be between 4 and 20 characters')
 ], requestValidation, async (req: Request, res: Response) => {
-  
-  
+    
   const { email, password } = req.body;
 
   const existingUser = await User.findOne({ email });  

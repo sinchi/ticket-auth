@@ -1,6 +1,6 @@
-import { SerializeError } from "./SerializeError";
+import { CustomError } from "./CustomError";
 
-export class BadRequestError extends SerializeError {
+export class BadRequestError extends CustomError {
 
   statusCode = 400;
 

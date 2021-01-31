@@ -1,11 +1,11 @@
 import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { body, validationResult } from 'express-validator';
+import { body } from 'express-validator';
 import { DatabaseConnectionError } from '../../errors/DatabaseValidationError';
-import { RequestValidationError } from '../../errors/RequestValidationError';
 import { BadRequestError } from '../../errors/BadRequestError';
 
 import { User, UserDoc } from '../../models/user';
+import { validateRequest } from '../../middleware/validate-request';
 
 
 
@@ -19,13 +19,7 @@ router.post('/api/users/signup', [
   .trim()
   .isLength({ min: 4, max: 20 })
   .withMessage('Password must be between 4 and 20 characters'),
-] , async (req: Request, res: Response) => {  
-
-  const errors = validationResult(req);
-
-  if(!errors.isEmpty()) {
-    throw new RequestValidationError(errors.array());
-  }
+], validateRequest , async (req: Request, res: Response) => {  
 
   const { email, password } = req.body;
 

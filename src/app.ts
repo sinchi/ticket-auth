@@ -1,21 +1,16 @@
 import express from 'express';
 import 'express-async-errors';
-import { json } from 'body-parser';
-
-
+import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
-
 import {currentUserRouter, signinRouter, signoutRouter, signupRouter} from './routes/user'
 import { errorHandler } from './middleware/error-handler';
 import { NotFoundError } from './errors/NotFoundError'
-
-import { requestValidation } from './middleware/request-handler';
 
 const app = express();
 
 app.set('trust proxy', true);
 
-app.use(json());
+app.use(bodyParser.json());
 
 app.use(cookieSession({
   signed: false,
@@ -29,7 +24,7 @@ app.use(signinRouter);
 app.use(signoutRouter);
 app.use(signupRouter);
 
-app.all('*', () => {
+app.all('*', async (req, res) => {
   throw new NotFoundError();
 });
 

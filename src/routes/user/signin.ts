@@ -1,14 +1,11 @@
 import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-
-
-
-import { body } from 'express-validator'
+import { body, validationResult } from 'express-validator'
 
 import { User, UserDoc } from '../../models/user';
 import { BadRequestError } from '../../errors/BadRequestError';
 import { Password } from '../../services/Password';
-import { requestValidation } from '../../middleware/request-handler';
+import { RequestValidationError } from '../../errors/RequestValidationError';
 
 const router = express.Router();
 
@@ -20,8 +17,13 @@ router.post('/api/users/signin', [
   .trim()
   .isLength({ min: 4, max: 20 })
   .withMessage('Password must be between 4 and 20 characters')
-], requestValidation, async (req: Request, res: Response) => {
-    
+], async (req: Request, res: Response) => {
+  
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    throw new RequestValidationError(errors.array());
+  }
+
   const { email, password } = req.body;
 
   const existingUser = await User.findOne({ email });  
@@ -32,7 +34,7 @@ router.post('/api/users/signin', [
   const isRightPassword = await Password.compare(existingUser.password, password)
 
   if(!isRightPassword) {
-    throw new BadRequestError('Password incorrect');
+    throw new BadRequestError('Password incorrect', 'password');
   }
 
   // generate json web token

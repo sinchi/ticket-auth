@@ -6,8 +6,8 @@ export class RequestValidationError extends CustomError {
   statusCode = 400;
 
   constructor(public errors: ValidationError[]) {
-    super();
-   // Object.setPrototypeOf(this, RequestValidationError.prototype);    
+    super('Request validation error');
+    Object.setPrototypeOf(this, RequestValidationError.prototype);    
   }
 
   serializeErrors(): Array<{ message: string; field?: string | undefined; }> {    
